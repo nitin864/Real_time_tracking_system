@@ -48,7 +48,12 @@ function stopTracking() {
     if (watchId !== null) {
         navigator.geolocation.clearWatch(watchId);
         watchId = null;
-
+        
+    }
+        if (marker[id]) {
+        map.removeLayer(marker[id]);
+        delete marker[id];
+    }
         // You can optionally emit "user-disconnected" or just rely on socket disconnect
         socket.emit("user-disconnected", socket.id);
     }
