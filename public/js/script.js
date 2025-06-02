@@ -48,15 +48,18 @@ function stopTracking() {
     if (watchId !== null) {
         navigator.geolocation.clearWatch(watchId);
         watchId = null;
-
-        // You can optionally emit "user-disconnected" or just rely on socket disconnect
-        socket.emit("user-disconnected", socket.id);
     }
 
-    // Update UI
-    document.getElementById("startBtn").disabled = false;
-    document.getElementById("stopBtn").disabled = true;
+    // Remove marker from map if exists
+    if (marker[socket.id]) {
+        map.removeLayer(marker[socket.id]);
+        delete marker[socket.id];
+    }
+
+    // Notify server that user disconnected (optional)
+    socket.emit("user-disconnected", socket.id);
 }
+
 
 // Socket events
 socket.on("connect", () => {
