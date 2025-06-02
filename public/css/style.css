@@ -18,6 +18,13 @@ body {
     display: flex;
     flex-direction: column;
 }
+button {
+  padding: 8px 14px;
+  font-size: 16px;
+  margin-right: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+}
 
 /* Header */
 header {
