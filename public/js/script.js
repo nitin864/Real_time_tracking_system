@@ -5,7 +5,7 @@ let watchId = null; // Used to stop tracking later
 // Map setup
 const map = L.map("map").setView([0, 0], 16);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "ntn contributors"
+    attribution: "By Nitin"
 }).addTo(map);
 
 // Start location tracking
