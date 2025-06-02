@@ -19,7 +19,16 @@ io.on("connection" , function(socket){
       io.emit("user-disconnected" , socket.id);
    })
    
-   
+   socket.on("user-disconnected", (id) => {
+    // 🔁 Broadcast to ALL other users
+    socket.broadcast.emit("user-disconnected", id);
+   });
+
+   socket.on("disconnect", () => {
+    io.emit("user-disconnected", socket.id); // or socket.broadcast.emit()
+   });
+
+  
   
    
 });
