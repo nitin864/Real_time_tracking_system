@@ -50,10 +50,7 @@ function stopTracking() {
         watchId = null;
         
     }
-        if (marker[socket.id]) {
-        map.removeLayer(marker[socket.id]);
-        delete marker[socket.id];
-    }
+ 
         // You can optionally emit "user-disconnected" or just rely on socket disconnect
         socket.emit("user-disconnected", socket.id);
     }
