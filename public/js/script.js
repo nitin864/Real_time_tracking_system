@@ -1,5 +1,6 @@
 const socket = io();
 const marker = {};
+let watchId = null; // Used to stop tracking later
 
 // Map setup
 const map = L.map("map").setView([0, 0], 16);
@@ -7,14 +8,14 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "OpenStreetMap contributors"
 }).addTo(map);
 
-// Start tracking function
+// Start location tracking
 function startTracking() {
     if (!navigator.geolocation) {
         alert("Geolocation is not supported by your browser.");
         return;
     }
 
-    navigator.geolocation.watchPosition(
+    watchId = navigator.geolocation.watchPosition(
         (position) => {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
@@ -28,29 +29,33 @@ function startTracking() {
         },
         (error) => {
             console.error("Geolocation error:", error);
-            alert("Unable to access location. Please enable it in browser settings.");
+            alert("Unable to access location.");
         },
         {
             enableHighAccuracy: true,
             maximumAge: 0,
-            timeout: 10000,
+            timeout: 5000,
         }
     );
+
+    // Update UI
+    document.getElementById("startBtn").disabled = true;
+    document.getElementById("stopBtn").disabled = false;
 }
 
-// Check for permissions and auto-start tracking
-if (navigator.permissions) {
-    navigator.permissions.query({ name: "geolocation" }).then((result) => {
-        if (result.state === "granted" || result.state === "prompt") {
-            startTracking();
-        } else {
-            // Optional: Show a UI to ask user to click a button
-            alert("Please allow location permission in your browser settings.");
-        }
-    });
-} else {
-    // Older browsers fallback
-    startTracking();
+// Stop location tracking
+function stopTracking() {
+    if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+
+        // You can optionally emit "user-disconnected" or just rely on socket disconnect
+        socket.emit("user-disconnected", socket.id);
+    }
+
+    // Update UI
+    document.getElementById("startBtn").disabled = false;
+    document.getElementById("stopBtn").disabled = true;
 }
 
 // Socket events
@@ -60,6 +65,7 @@ socket.on("connect", () => {
 
 socket.on("disconnect", () => {
     document.getElementById("status").textContent = "🔴 Disconnected";
+    stopTracking();
 });
 
 socket.on("recieve-location", (data) => {
