@@ -3,7 +3,7 @@ const marker = {};
 let watchId = null; // Used to stop tracking later
 
 // Map setup
-const map = L.map("map").setView([0, 0], 16);
+const map = L.map("map").setView([0, 0], 14);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "By Nitin"
 }).addTo(map);
@@ -34,7 +34,7 @@ function startTracking() {
         {
             enableHighAccuracy: true,
             maximumAge: 0,
-            timeout: 5000,
+            timeout: 7000,
         }
     );
 
